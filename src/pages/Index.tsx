@@ -13,6 +13,8 @@ const Index = () => {
   const [selectedCity, setSelectedCity] = useState('');
   const [eventType, setEventType] = useState('');
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [showOutfit, setShowOutfit] = useState(false);
+  const [showStyleAnalysis, setShowStyleAnalysis] = useState(false);
   const [weatherData, setWeatherData] = useState<{ temp: number; condition: string } | null>(null);
 
   const cities = [
@@ -91,9 +93,26 @@ const Index = () => {
       return;
     }
 
+    setShowOutfit(true);
     toast({
       title: '✨ Образ готов!',
       description: 'AI подобрал идеальный look для вашего события'
+    });
+  };
+
+  const handleStyleAnalysis = () => {
+    if (uploadedImages.length === 0) {
+      toast({
+        title: 'Загрузите фото',
+        description: 'Добавьте фотографии вашей одежды для анализа',
+        variant: 'destructive'
+      });
+      return;
+    }
+    setShowStyleAnalysis(true);
+    toast({
+      title: '🎨 Анализ завершен!',
+      description: 'Определили ваш стиль: Современный минимализм'
     });
   };
 
@@ -105,9 +124,17 @@ const Index = () => {
       
       <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
         <header className="text-center mb-12 animate-fade-in">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
-            ВкусОбраза
-          </h1>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary to-purple-400 blur-xl opacity-50 animate-pulse"></div>
+              <div className="relative bg-gradient-to-br from-primary to-purple-600 p-4 rounded-2xl">
+                <Icon name="Sparkles" size={40} className="text-white" />
+              </div>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
+              ВкусОбраза
+            </h1>
+          </div>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
             Ваш персональный AI-стилист. Подбираем образы с учетом погоды, события и вашего гардероба
           </p>
@@ -221,6 +248,51 @@ const Index = () => {
                 <Icon name="Sparkles" className="mr-2" />
                 Создать образ
               </Button>
+
+              {showOutfit && (
+                <div className="mt-6 p-6 bg-gradient-to-br from-primary/10 to-purple-100 rounded-lg border-2 border-primary/20 animate-fade-in">
+                  <h3 className="font-bold text-lg mb-4 flex items-center gap-2">
+                    <Icon name="CheckCircle" className="text-primary" />
+                    Ваш идеальный образ
+                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <Icon name="Shirt" className="text-primary mt-1" size={20} />
+                      <div>
+                        <p className="font-semibold">Верх:</p>
+                        <p className="text-sm text-muted-foreground">Белая блузка из шелка + бежевый кардиган оверсайз</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Icon name="Package" className="text-primary mt-1" size={20} />
+                      <div>
+                        <p className="font-semibold">Низ:</p>
+                        <p className="text-sm text-muted-foreground">Темно-синие джинсы прямого кроя</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Icon name="Footprints" className="text-primary mt-1" size={20} />
+                      <div>
+                        <p className="font-semibold">Обувь:</p>
+                        <p className="text-sm text-muted-foreground">Белые кроссовки или бежевые лоферы</p>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <Icon name="Watch" className="text-primary mt-1" size={20} />
+                      <div>
+                        <p className="font-semibold">Аксессуары:</p>
+                        <p className="text-sm text-muted-foreground">Минималистичные серьги-кольца, небольшая кожаная сумка</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-4 p-3 bg-white/60 rounded-lg">
+                    <p className="text-xs text-muted-foreground flex items-center gap-2">
+                      <Icon name="Thermometer" size={16} />
+                      С учетом температуры {weatherData?.temp}°C — комфортно и стильно!
+                    </p>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -261,11 +333,46 @@ const Index = () => {
                 <p className="text-sm text-white/90 mb-4">
                   Загрузите фото, и наш AI определит ваш стиль и цветотип
                 </p>
-                <Button variant="secondary" className="w-full">
+                <Button variant="secondary" className="w-full" onClick={handleStyleAnalysis}>
                   Попробовать
                 </Button>
               </CardContent>
             </Card>
+
+            {showStyleAnalysis && (
+              <Card className="animate-scale-in border-2 border-primary/30">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Icon name="Palette" className="text-primary" />
+                    Результаты анализа
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <p className="text-sm font-semibold mb-2">Ваш стиль:</p>
+                    <Badge className="bg-primary text-white">Современный минимализм</Badge>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold mb-2">Цветотип:</p>
+                    <div className="flex gap-2">
+                      <div className="w-8 h-8 rounded-full bg-blue-200 border-2 border-primary"></div>
+                      <div className="w-8 h-8 rounded-full bg-gray-700"></div>
+                      <div className="w-8 h-8 rounded-full bg-white border"></div>
+                      <div className="w-8 h-8 rounded-full bg-amber-100"></div>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-2">Холодное лето</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold mb-2">Рекомендации:</p>
+                    <ul className="text-xs text-muted-foreground space-y-1">
+                      <li>• Базовые цвета: серый, синий, белый</li>
+                      <li>• Акценты: пыльная роза, лаванда</li>
+                      <li>• Избегайте: яркий оранжевый, теплый желтый</li>
+                    </ul>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
 
