@@ -22,6 +22,7 @@ const Index = () => {
     'Екатеринбург',
     'Казань',
     'Нижний Новгород',
+    'Томск',
     'Сочи',
     'Владивосток'
   ];
@@ -97,15 +98,35 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary via-purple-400 to-pink-400"></div>
+      <div className="absolute top-20 right-0 w-1 h-64 bg-gradient-to-b from-transparent via-primary/20 to-transparent"></div>
+      <div className="absolute bottom-40 left-0 w-1 h-48 bg-gradient-to-b from-transparent via-purple-300/30 to-transparent"></div>
+      
+      <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
         <header className="text-center mb-12 animate-fade-in">
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
             StyleAI
           </h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
             Ваш персональный AI-стилист. Подбираем образы с учетом погоды, события и вашего гардероба
           </p>
+          <div className="flex items-center justify-center gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-primary animate-pulse"></div>
+              <span>10K+ образов в базе</span>
+            </div>
+            <div className="w-px h-4 bg-border"></div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+              <span>Актуальные тренды 2025</span>
+            </div>
+            <div className="w-px h-4 bg-border"></div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" style={{ animationDelay: '1s' }}></div>
+              <span>AI-рекомендации</span>
+            </div>
+          </div>
         </header>
 
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
@@ -247,6 +268,20 @@ const Index = () => {
             </Card>
           </div>
         </div>
+
+        <div className="relative mb-12">
+          <div className="absolute left-1/2 transform -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent mb-8"></div>
+        </div>
+
+        <section className="mb-12 text-center">
+          <h2 className="text-3xl font-bold mb-4">Как это работает?</h2>
+          <p className="text-muted-foreground max-w-3xl mx-auto mb-8">
+            StyleAI анализирует погоду в вашем городе, учитывает тип предстоящего мероприятия и изучает ваш гардероб, 
+            чтобы создать идеальный образ. Наша нейросеть обучена на тысячах стильных сочетаний от ведущих fashion-блогеров 
+            и стилистов со всего мира. Просто загрузите фото вашей одежды, выберите событие — и получите персональные рекомендации!
+          </p>
+          <div className="w-24 h-1 bg-gradient-to-r from-primary to-purple-400 mx-auto rounded-full"></div>
+        </section>
 
         <div className="grid md:grid-cols-3 gap-6 mb-8">
           {[
