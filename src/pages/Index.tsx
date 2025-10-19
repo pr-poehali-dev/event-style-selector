@@ -16,6 +16,9 @@ const Index = () => {
   const [showOutfit, setShowOutfit] = useState(false);
   const [showStyleAnalysis, setShowStyleAnalysis] = useState(false);
   const [selectedTip, setSelectedTip] = useState<number | null>(null);
+  const [favoriteTips, setFavoriteTips] = useState<number[]>([]);
+  const [selectedOutfit, setSelectedOutfit] = useState<number | null>(null);
+  const [showMoreOutfits, setShowMoreOutfits] = useState(false);
   const [weatherData, setWeatherData] = useState<{ temp: number; condition: string } | null>(null);
 
   const cities = [
@@ -109,6 +112,22 @@ const Index = () => {
     });
   };
 
+  const toggleFavoriteTip = (idx: number) => {
+    if (favoriteTips.includes(idx)) {
+      setFavoriteTips(favoriteTips.filter(i => i !== idx));
+      toast({
+        title: 'Удалено из избранного',
+        description: 'Совет убран из сохраненных'
+      });
+    } else {
+      setFavoriteTips([...favoriteTips, idx]);
+      toast({
+        title: '⭐ Добавлено в избранное',
+        description: 'Совет сохранен в вашей коллекции'
+      });
+    }
+  };
+
   const handleStyleAnalysis = () => {
     if (uploadedImages.length === 0) {
       toast({
@@ -126,10 +145,13 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-purple-50 relative overflow-hidden">
-      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary via-purple-400 to-pink-400"></div>
-      <div className="absolute top-20 right-0 w-1 h-64 bg-gradient-to-b from-transparent via-primary/20 to-transparent"></div>
-      <div className="absolute bottom-40 left-0 w-1 h-48 bg-gradient-to-b from-transparent via-purple-300/30 to-transparent"></div>
+    <div className="min-h-screen bg-gradient-to-br from-purple-100 via-purple-50 to-white relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-primary via-purple-400 to-pink-400 shadow-lg shadow-purple-500/50"></div>
+      <div className="absolute top-20 right-0 w-1 h-64 bg-gradient-to-b from-transparent via-primary/30 to-transparent"></div>
+      <div className="absolute bottom-40 left-0 w-1 h-48 bg-gradient-to-b from-transparent via-purple-400/40 to-transparent"></div>
+      <div className="absolute top-1/4 left-10 w-32 h-32 bg-purple-300/20 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-1/3 right-20 w-40 h-40 bg-purple-400/20 rounded-full blur-3xl"></div>
+      <div className="absolute top-1/2 left-1/2 w-64 h-64 bg-purple-200/10 rounded-full blur-3xl"></div>
       
       <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
         <header className="text-center mb-12 animate-fade-in">
@@ -316,22 +338,39 @@ const Index = () => {
               <CardContent className="space-y-4">
                 {fashionTips.map((tip, idx) => (
                   <div key={idx}>
-                    <div 
-                      className="flex gap-3 group cursor-pointer p-2 rounded-lg hover:bg-secondary/50 transition-colors"
-                      onClick={() => setSelectedTip(selectedTip === idx ? null : idx)}
-                    >
-                      <div className="p-2 bg-secondary rounded-lg h-fit group-hover:bg-primary/10 transition-colors">
-                        <Icon name={tip.icon as any} size={20} className="text-primary" />
+                    <div className="flex items-start gap-2">
+                      <div 
+                        className="flex-1 flex gap-3 group cursor-pointer p-2 rounded-lg hover:bg-purple-100/50 transition-colors"
+                        onClick={() => setSelectedTip(selectedTip === idx ? null : idx)}
+                      >
+                        <div className="p-2 bg-purple-100 rounded-lg h-fit group-hover:bg-primary/10 transition-colors">
+                          <Icon name={tip.icon as any} size={20} className="text-primary" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-sm mb-1">{tip.title}</h4>
+                          <p className="text-xs text-muted-foreground leading-relaxed">{tip.desc}</p>
+                        </div>
+                        <Icon 
+                          name={selectedTip === idx ? "ChevronUp" : "ChevronDown"} 
+                          size={20} 
+                          className="text-muted-foreground transition-transform"
+                        />
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-sm mb-1">{tip.title}</h4>
-                        <p className="text-xs text-muted-foreground leading-relaxed">{tip.desc}</p>
-                      </div>
-                      <Icon 
-                        name={selectedTip === idx ? "ChevronUp" : "ChevronDown"} 
-                        size={20} 
-                        className="text-muted-foreground transition-transform"
-                      />
+                      <Button
+                        size="sm"
+                        variant={favoriteTips.includes(idx) ? "default" : "outline"}
+                        className={`p-2 h-auto ${favoriteTips.includes(idx) ? 'bg-purple-600 hover:bg-purple-700' : 'hover:bg-purple-100'}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFavoriteTip(idx);
+                        }}
+                      >
+                        <Icon 
+                          name={favoriteTips.includes(idx) ? "Star" : "StarOff"} 
+                          size={16} 
+                          className={favoriteTips.includes(idx) ? "fill-current" : ""}
+                        />
+                      </Button>
                     </div>
                     {selectedTip === idx && (
                       <div className="mt-3 p-4 bg-primary/5 rounded-lg border border-primary/10 animate-fade-in">
@@ -431,9 +470,9 @@ const Index = () => {
             { icon: 'CloudSun', title: 'Погода', desc: 'Актуальные данные для вашего города' },
             { icon: 'Camera', title: 'Гардероб', desc: 'Анализ ваших вещей и сочетаний' }
           ].map((feature, idx) => (
-            <Card key={idx} className="text-center hover:shadow-lg transition-all hover:-translate-y-1 animate-fade-in" style={{ animationDelay: `${idx * 0.1}s` }}>
+            <Card key={idx} className="text-center hover:shadow-xl hover:shadow-purple-200/50 transition-all hover:-translate-y-1 animate-fade-in border-purple-100" style={{ animationDelay: `${idx * 0.1}s` }}>
               <CardContent className="pt-6">
-                <div className="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                <div className="mx-auto w-16 h-16 bg-gradient-to-br from-purple-100 to-purple-200 rounded-full flex items-center justify-center mb-4">
                   <Icon name={feature.icon as any} size={32} className="text-primary" />
                 </div>
                 <h3 className="font-semibold mb-2">{feature.title}</h3>
@@ -460,7 +499,13 @@ const Index = () => {
                 temp: '+15°C',
                 season: 'Весна/Осень',
                 tags: ['Офис', 'Деловое'],
-                icon: 'Briefcase'
+                icon: 'Briefcase',
+                details: {
+                  верх: 'Белая шелковая блузка с V-вырезом',
+                  низ: 'Бежевые брюки прямого кроя',
+                  обувь: 'Бежевые лоферы на низком каблуке',
+                  аксессуары: 'Кожаная сумка-тоут, минималистичные часы'
+                }
               },
               {
                 image: 'https://cdn.poehali.dev/projects/0dc819b1-7435-4b92-ad20-5882f6660e2f/files/940c68ad-0bcf-4c47-a475-25a37b40fab2.jpg',
@@ -469,7 +514,13 @@ const Index = () => {
                 temp: '+20°C',
                 season: 'Лето',
                 tags: ['Вечеринка', 'Свидание'],
-                icon: 'PartyPopper'
+                icon: 'PartyPopper',
+                details: {
+                  верх: 'Черное коктейльное платье миди',
+                  низ: 'Встроено в платье',
+                  обувь: 'Черные туфли-лодочки на шпильке',
+                  аксессуары: 'Клатч с пайетками, серьги-люстры, красная помада'
+                }
               },
               {
                 image: 'https://cdn.poehali.dev/projects/0dc819b1-7435-4b92-ad20-5882f6660e2f/files/112d241f-f7cf-418f-8a3b-f17d926e410d.jpg',
@@ -478,10 +529,63 @@ const Index = () => {
                 temp: '+10°C',
                 season: 'Круглый год',
                 tags: ['Прогулка', 'Спорт'],
-                icon: 'Coffee'
-              }
+                icon: 'Coffee',
+                details: {
+                  верх: 'Серый худи оверсайз',
+                  низ: 'Темно-синие джинсы-бойфренды',
+                  обувь: 'Белые кроссовки',
+                  аксессуары: 'Рюкзак, солнцезащитные очки, кепка'
+                }
+              },
+              ...(showMoreOutfits ? [
+                {
+                  image: 'https://cdn.poehali.dev/projects/0dc819b1-7435-4b92-ad20-5882f6660e2f/files/f5f74894-0e8e-4403-8f6a-a735594b6038.jpg',
+                  title: 'Бизнес-встреча',
+                  desc: 'Строгий деловой стиль',
+                  temp: '+18°C',
+                  season: 'Весна',
+                  tags: ['Офис', 'Деловое'],
+                  icon: 'Building',
+                  details: {
+                    верх: 'Темно-синий пиджак и белая рубашка',
+                    низ: 'Серые брюки со стрелками',
+                    обувь: 'Черные оксфорды',
+                    аксессуары: 'Кожаный портфель, галстук, часы'
+                  }
+                },
+                {
+                  image: 'https://cdn.poehali.dev/projects/0dc819b1-7435-4b92-ad20-5882f6660e2f/files/3206263a-17bc-49e7-a3cc-c72f4c3abc8a.jpg',
+                  title: 'Спорт-активность',
+                  desc: 'Функциональный фитнес-образ',
+                  temp: '+12°C',
+                  season: 'Весна/Осень',
+                  tags: ['Спорт', 'Активный отдых'],
+                  icon: 'Activity',
+                  details: {
+                    верх: 'Спортивный топ и ветровка',
+                    низ: 'Леггинсы с высокой посадкой',
+                    обувь: 'Беговые кроссовки',
+                    аксессуары: 'Фитнес-браслет, бутылка для воды, наушники'
+                  }
+                },
+                {
+                  image: 'https://cdn.poehali.dev/projects/0dc819b1-7435-4b92-ad20-5882f6660e2f/files/4ecca14b-3d4e-4c8a-a8b0-e7811c4a4945.jpg',
+                  title: 'Романтическое свидание',
+                  desc: 'Нежный женственный образ',
+                  temp: '+22°C',
+                  season: 'Лето',
+                  tags: ['Свидание', 'Вечер'],
+                  icon: 'HeartHandshake',
+                  details: {
+                    верх: 'Нежно-розовое платье с кружевом',
+                    низ: 'Встроено в платье',
+                    обувь: 'Бежевые босоножки на каблуке',
+                    аксессуары: 'Маленькая сумочка, деликатные украшения, духи'
+                  }
+                }
+              ] : [])
             ].map((outfit, idx) => (
-              <Card key={idx} className="overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 animate-fade-in" style={{ animationDelay: `${idx * 0.15}s` }}>
+              <Card key={idx} className="overflow-hidden group hover:shadow-2xl hover:shadow-purple-300/50 transition-all duration-300 hover:-translate-y-2 animate-fade-in border-purple-100" style={{ animationDelay: `${idx * 0.15}s` }}>
                 <div className="relative h-64 overflow-hidden">
                   <img 
                     src={outfit.image} 
@@ -511,19 +615,63 @@ const Index = () => {
                       </Badge>
                     ))}
                   </div>
-                  <Button className="w-full mt-4" variant="outline" size="sm">
+                  <Button 
+                    className="w-full mt-4 bg-purple-600 hover:bg-purple-700 text-white border-0" 
+                    size="sm"
+                    onClick={() => setSelectedOutfit(selectedOutfit === idx ? null : idx)}
+                  >
                     <Icon name="Eye" size={16} className="mr-2" />
-                    Посмотреть детали
+                    {selectedOutfit === idx ? 'Скрыть детали' : 'Посмотреть детали'}
                   </Button>
+                  
+                  {selectedOutfit === idx && (
+                    <div className="mt-4 p-4 bg-purple-50 rounded-lg border border-purple-200 animate-fade-in">
+                      <h4 className="font-bold text-sm mb-3 text-purple-900">Детали образа:</h4>
+                      <div className="space-y-2">
+                        <div className="flex items-start gap-2">
+                          <Icon name="Shirt" size={16} className="text-purple-600 mt-0.5" />
+                          <div>
+                            <p className="text-xs font-semibold text-purple-900">Верх:</p>
+                            <p className="text-xs text-muted-foreground">{outfit.details.верх}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Icon name="Package" size={16} className="text-purple-600 mt-0.5" />
+                          <div>
+                            <p className="text-xs font-semibold text-purple-900">Низ:</p>
+                            <p className="text-xs text-muted-foreground">{outfit.details.низ}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Icon name="Footprints" size={16} className="text-purple-600 mt-0.5" />
+                          <div>
+                            <p className="text-xs font-semibold text-purple-900">Обувь:</p>
+                            <p className="text-xs text-muted-foreground">{outfit.details.обувь}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-2">
+                          <Icon name="Watch" size={16} className="text-purple-600 mt-0.5" />
+                          <div>
+                            <p className="text-xs font-semibold text-purple-900">Аксессуары:</p>
+                            <p className="text-xs text-muted-foreground">{outfit.details.аксессуары}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}
           </div>
 
           <div className="text-center mt-8">
-            <Button size="lg" variant="outline" className="gap-2">
-              Показать больше образов
-              <Icon name="ChevronDown" size={20} />
+            <Button 
+              size="lg" 
+              className="gap-2 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 text-white border-0 shadow-lg shadow-purple-500/50"
+              onClick={() => setShowMoreOutfits(!showMoreOutfits)}
+            >
+              {showMoreOutfits ? 'Скрыть образы' : 'Показать больше образов'}
+              <Icon name={showMoreOutfits ? "ChevronUp" : "ChevronDown"} size={20} />
             </Button>
           </div>
         </section>
