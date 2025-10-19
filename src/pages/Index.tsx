@@ -390,7 +390,7 @@ const Index = () => {
           <div className="w-24 h-1 bg-gradient-to-r from-primary to-purple-400 mx-auto rounded-full"></div>
         </section>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-3 gap-6 mb-12">
           {[
             { icon: 'Sparkles', title: 'AI-подбор', desc: 'Умные рекомендации на основе 10K+ образов' },
             { icon: 'CloudSun', title: 'Погода', desc: 'Актуальные данные для вашего города' },
@@ -407,6 +407,91 @@ const Index = () => {
             </Card>
           ))}
         </div>
+
+        <section className="mb-12">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold mb-4">Галерея образов</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Вдохновляйтесь готовыми луками для разных случаев. Каждый образ подобран с учетом актуальных трендов 2025
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                image: 'https://cdn.poehali.dev/projects/0dc819b1-7435-4b92-ad20-5882f6660e2f/files/c7f54df4-85f2-44d4-9c41-9b7d1293c6da.jpg',
+                title: 'Офисный шик',
+                desc: 'Элегантный образ для деловых встреч',
+                temp: '+15°C',
+                season: 'Весна/Осень',
+                tags: ['Офис', 'Деловое'],
+                icon: 'Briefcase'
+              },
+              {
+                image: 'https://cdn.poehali.dev/projects/0dc819b1-7435-4b92-ad20-5882f6660e2f/files/940c68ad-0bcf-4c47-a475-25a37b40fab2.jpg',
+                title: 'Вечерний выход',
+                desc: 'Роскошный look для особых событий',
+                temp: '+20°C',
+                season: 'Лето',
+                tags: ['Вечеринка', 'Свидание'],
+                icon: 'PartyPopper'
+              },
+              {
+                image: 'https://cdn.poehali.dev/projects/0dc819b1-7435-4b92-ad20-5882f6660e2f/files/112d241f-f7cf-418f-8a3b-f17d926e410d.jpg',
+                title: 'Casual прогулка',
+                desc: 'Комфортный стиль на каждый день',
+                temp: '+10°C',
+                season: 'Круглый год',
+                tags: ['Прогулка', 'Спорт'],
+                icon: 'Coffee'
+              }
+            ].map((outfit, idx) => (
+              <Card key={idx} className="overflow-hidden group hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 animate-fade-in" style={{ animationDelay: `${idx * 0.15}s` }}>
+                <div className="relative h-64 overflow-hidden">
+                  <img 
+                    src={outfit.image} 
+                    alt={outfit.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  />
+                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1 text-xs font-semibold">
+                    <Icon name="Thermometer" size={14} className="text-primary" />
+                    {outfit.temp}
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                </div>
+                <CardContent className="p-5">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Icon name={outfit.icon as any} size={20} className="text-primary" />
+                    <h3 className="font-bold text-lg">{outfit.title}</h3>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">{outfit.desc}</p>
+                  <div className="flex items-center gap-2 mb-3 text-xs text-muted-foreground">
+                    <Icon name="Calendar" size={14} />
+                    <span>{outfit.season}</span>
+                  </div>
+                  <div className="flex gap-2 flex-wrap">
+                    {outfit.tags.map((tag, tagIdx) => (
+                      <Badge key={tagIdx} variant="secondary" className="text-xs">
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                  <Button className="w-full mt-4" variant="outline" size="sm">
+                    <Icon name="Eye" size={16} className="mr-2" />
+                    Посмотреть детали
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          <div className="text-center mt-8">
+            <Button size="lg" variant="outline" className="gap-2">
+              Показать больше образов
+              <Icon name="ChevronDown" size={20} />
+            </Button>
+          </div>
+        </section>
       </div>
     </div>
   );
