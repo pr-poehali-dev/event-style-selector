@@ -15,6 +15,7 @@ const Index = () => {
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [showOutfit, setShowOutfit] = useState(false);
   const [showStyleAnalysis, setShowStyleAnalysis] = useState(false);
+  const [selectedTip, setSelectedTip] = useState<number | null>(null);
   const [weatherData, setWeatherData] = useState<{ temp: number; condition: string } | null>(null);
 
   const cities = [
@@ -42,22 +43,30 @@ const Index = () => {
     {
       title: 'Многослойность в 2025',
       desc: 'Комбинируйте текстуры и длины для создания глубины образа',
-      icon: 'Layers'
+      icon: 'Layers',
+      fullText: 'Многослойность остается главным трендом 2025 года. Сочетайте разные текстуры: шелк с кашемиром, деним с кожей, трикотаж с шифоном. Играйте с длинами — длинный кардиган поверх короткого топа, или укороченная куртка с длинной юбкой. Это создает визуальную глубину и делает образ более динамичным.',
+      tips: ['Начните с базовой футболки или рубашки', 'Добавьте джемпер или кардиган среднего слоя', 'Завершите образ пальто или жакетом', 'Используйте не более 3-4 слоев одновременно']
     },
     {
       title: 'Цветовая палитра',
       desc: 'Монохром с яркими акцентами — тренд сезона',
-      icon: 'Palette'
+      icon: 'Palette',
+      fullText: 'В 2025 актуален монохромный подход к цветам с неожиданными яркими акцентами. Базовая палитра строится на нейтральных оттенках — бежевом, сером, белом, черном. Акцентные цвета: электрик-синий, фуксия, лаймовый зеленый. Используйте яркий цвет точечно — сумка, обувь или украшение.',
+      tips: ['Базовый гардероб: 70% нейтральных цветов', '20% пастельных оттенков', '10% ярких акцентов', 'Правило трех цветов в одном образе']
     },
     {
       title: 'Устойчивая мода',
       desc: 'Качество важнее количества — инвестируйте в базовые вещи',
-      icon: 'Leaf'
+      icon: 'Leaf',
+      fullText: 'Осознанное потребление — это не просто тренд, а философия моды будущего. Инвестируйте в качественные базовые вещи, которые прослужат годами. Обращайте внимание на состав ткани, качество пошива и универсальность вещи. Одна качественная белая рубашка лучше пяти дешевых.',
+      tips: ['Выбирайте натуральные ткани: хлопок, лен, шерсть', 'Проверяйте качество швов и фурнитуры', 'Создавайте капсульный гардероб из 30-40 вещей', 'Ухаживайте за одеждой правильно']
     },
     {
       title: 'Аксессуары 2025',
       desc: 'Объемные украшения и минималистичные сумки',
-      icon: 'Watch'
+      icon: 'Watch',
+      fullText: 'Аксессуары 2025 — это контрасты. С одной стороны — крупные, объемные украшения: массивные цепи, большие серьги-кольца, многослойные браслеты. С другой — минималистичные компактные сумки строгих геометрических форм. Главное правило: если украшения крупные, то сумка — лаконичная, и наоборот.',
+      tips: ['Крупные серьги + простой наряд = баланс', 'Мини-сумка на цепочке — must-have сезона', 'Часы оверсайз вместо браслетов', 'Один акцентный аксессуар на образ']
     }
   ];
 
@@ -306,14 +315,40 @@ const Index = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {fashionTips.map((tip, idx) => (
-                  <div key={idx} className="flex gap-3 group cursor-pointer">
-                    <div className="p-2 bg-secondary rounded-lg h-fit group-hover:bg-primary/10 transition-colors">
-                      <Icon name={tip.icon as any} size={20} className="text-primary" />
+                  <div key={idx}>
+                    <div 
+                      className="flex gap-3 group cursor-pointer p-2 rounded-lg hover:bg-secondary/50 transition-colors"
+                      onClick={() => setSelectedTip(selectedTip === idx ? null : idx)}
+                    >
+                      <div className="p-2 bg-secondary rounded-lg h-fit group-hover:bg-primary/10 transition-colors">
+                        <Icon name={tip.icon as any} size={20} className="text-primary" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm mb-1">{tip.title}</h4>
+                        <p className="text-xs text-muted-foreground leading-relaxed">{tip.desc}</p>
+                      </div>
+                      <Icon 
+                        name={selectedTip === idx ? "ChevronUp" : "ChevronDown"} 
+                        size={20} 
+                        className="text-muted-foreground transition-transform"
+                      />
                     </div>
-                    <div>
-                      <h4 className="font-semibold text-sm mb-1">{tip.title}</h4>
-                      <p className="text-xs text-muted-foreground leading-relaxed">{tip.desc}</p>
-                    </div>
+                    {selectedTip === idx && (
+                      <div className="mt-3 p-4 bg-primary/5 rounded-lg border border-primary/10 animate-fade-in">
+                        <p className="text-sm text-foreground mb-3 leading-relaxed">{tip.fullText}</p>
+                        <div className="space-y-2">
+                          <p className="text-xs font-semibold text-primary">Практические советы:</p>
+                          <ul className="space-y-1">
+                            {tip.tips.map((tipItem, tipIdx) => (
+                              <li key={tipIdx} className="text-xs text-muted-foreground flex items-start gap-2">
+                                <Icon name="Check" size={14} className="text-primary mt-0.5 flex-shrink-0" />
+                                <span>{tipItem}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
               </CardContent>
