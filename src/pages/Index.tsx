@@ -106,7 +106,7 @@ const Index = () => {
       <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
         <header className="text-center mb-12 animate-fade-in">
           <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary via-purple-600 to-primary bg-clip-text text-transparent">
-            StyleAI
+            ВкусОбраза
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-4">
             Ваш персональный AI-стилист. Подбираем образы с учетом погоды, события и вашего гардероба
@@ -276,7 +276,7 @@ const Index = () => {
         <section className="mb-12 text-center">
           <h2 className="text-3xl font-bold mb-4">Как это работает?</h2>
           <p className="text-muted-foreground max-w-3xl mx-auto mb-8">
-            StyleAI анализирует погоду в вашем городе, учитывает тип предстоящего мероприятия и изучает ваш гардероб, 
+            ВкусОбраза анализирует погоду в вашем городе, учитывает тип предстоящего мероприятия и изучает ваш гардероб, 
             чтобы создать идеальный образ. Наша нейросеть обучена на тысячах стильных сочетаний от ведущих fashion-блогеров 
             и стилистов со всего мира. Просто загрузите фото вашей одежды, выберите событие — и получите персональные рекомендации!
           </p>
